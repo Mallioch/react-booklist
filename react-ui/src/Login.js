@@ -39,6 +39,7 @@ class Login extends React.Component {
     .done((data) => {
       store.dispatch({ type: actions.LOGIN });
       //Success! Move them to the book list.
+      console.log('pushing to booklist');
       this.props.history.push('/booklist');
     })
     .fail((xhr) => {

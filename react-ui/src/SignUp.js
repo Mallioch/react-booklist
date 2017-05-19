@@ -1,30 +1,16 @@
 import React from 'react';
 import $ from 'jquery';
 import './sign-up.css';
+import { store, actions } from './store/store.js';
 
 class SignUp extends React.Component {
 
-  constructor() {
-    super();
-
-    this.state = {
-      usernameValue: '',
-      passwordValue: '',
-      errorMessage: '',
-      happyMessage: ''
-    }
-  }
-
   handleUsernameChange(evt) {
-    this.setState({
-      usernameValue: evt.target.value
-    });
+    store.dispatch({ type: actions.SIGNUP_USERNAME_CHANGE, value: evt.target.value });
   }
 
   handlePasswordChange(evt) {
-    this.setState({
-      passwordValue: evt.target.value
-    });
+    store.dispatch({ type: actions.SIGNUP_PASSWORD_CHANGE, value: evt.target.value });
   }
 
   handleSignUpClick() {
@@ -32,36 +18,33 @@ class SignUp extends React.Component {
       url: '/api/signup',
       method: 'POST',
       data: {
-        username: this.state.usernameValue,
-        password: this.state.passwordValue
+        username: this.props.signupUsernameValue,
+        password: this.props.signupPasswordValue
       }
     })
     .done((data) => {
-      this.setState({
-        errorMessage: '',
-        happyMessage: 'Successfully signed up user',
-        usernameValue: '',
-        passwordValue: ''
-      });
+      store.dispatch({ type: actions.SIGNUP });
+      //Success! Move them to the book list.
+      this.props.history.push('/booklist');
     })
     .fail((xhr, error, responseText) => {
-      console.log('xhr', xhr);
-      this.setState({
-        errorMessage: xhr.status + ': ' + xhr.responseText,
-        happyMessage: ''
-      });
+      store.dispatch({ type: actions.SIGNUP_FAILURE, message: xhr.responseText });
+      // console.log('xhr', xhr);
+      // this.setState({
+      //   errorMessage: xhr.status + ': ' + xhr.responseText,
+      //   happyMessage: ''
+      // });
     });
   }
 
   render() {
 
+    console.log('SignUp rerender', this.props);
+
     //If nothing has happened yet, nothing will show. However, if there is an error or happy message, those will be shown.
     let message;
-    if (this.state.errorMessage !== '') {
-      message = <div className="message bad-message">{this.state.errorMessage}</div>
-    }
-    else if (this.state.happyMessage !== '') {
-      message = <div className="message good-message">{this.state.happyMessage}</div>
+    if (this.props.signupErrorMessage !== '') {
+      message = <div className="message bad-message">{this.props.signupErrorMessage}</div>
     }
 
     return (
@@ -70,12 +53,12 @@ class SignUp extends React.Component {
 
         <input
           placeholder="username"
-          value={this.state.usernameValue}
+          value={this.props.signupUsernameValue}
           onChange={(evt) => this.handleUsernameChange(evt)}
           />
         <input
           placeholder="password"
-          value={this.state.passwordValue}
+          value={this.props.signupPasswordValue}
           onChange={(evt) => this.handlePasswordChange(evt)}
           />
         <button onClick={() => this.handleSignUpClick()}>sign up</button>
