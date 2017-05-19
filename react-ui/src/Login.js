@@ -47,7 +47,7 @@ class Login extends React.Component {
   }
 
   render() {
-    console.log('rendering login', this.state);
+    //console.log('rendering login', this.state);
 
     //If nothing has happened yet, nothing will show. However, if there is an error or happy message, those will be shown.
     let message;
