@@ -121,13 +121,6 @@ function setup(app) {
     }
   });
 
-  app.get('/api/authy', function(req, res) {
-    //If the user ia authenticated, express will add the user to the request object. Convenient!
-    console.log('authy', req.user);
-
-    res.send(req.user);
-  });
-
 }
 
 

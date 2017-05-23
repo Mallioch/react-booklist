@@ -6,6 +6,7 @@ import Login from './Login.js';
 import Logout from './Logout.js';
 import Navigation from './Navigation.js';
 import BookList from './BookList.js';
+import AddBook from './AddBook.js';
 import { store } from './store/store.js';
 
 
@@ -37,7 +38,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('app state', this.state);
+    //console.log('app state', this.state);
     return (
       <Router>
         <div className="App container">
@@ -46,6 +47,7 @@ class App extends React.Component {
           <Route path="/login" render={(props) => <Login history={props.history} />} />
           <Route path="/logout" component={Logout} />
           <PrivateRoute path="/booklist" component={BookList} />
+          <PrivateRoute path="/addbook" component={AddBook} />
         </div>
       </Router>
     );

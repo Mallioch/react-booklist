@@ -10,20 +10,32 @@ const actions = {
   SIGNUP_PASSWORD_CHANGE: 'SIGNUP_PASSWORD_CHANGE',
   SIGNUP: 'SIGNUP',
   SIGNUP_FAILURE: 'SIGNUP_FAILURE',
+  LOAD_BOOKS: 'LOAD_BOOKS',
+  ADD_BOOK_TITLE_CHANGE: 'ADD_BOOK_TITLE_CHANGE',
+  ADD_BOOK_AUTHOR_CHANGE: 'ADD_BOOK_AUTHOR_CHANGE',
+  ADD_BOOK_PUB_YEAR_CHANGE: 'ADD_BOOK_PUB_YEAR_CHANGE',
+  ADD_BOOK_DESCRIPTION_CHANGE: 'ADD_BOOK_DESCRIPTION_CHANGE',
+  SAVE_NEW_BOOK: 'SAVE_NEW_BOOK',
+  REMOVE_BOOK: 'REMOVE_BOOK'
 }
 
 const initialState = {
   isLoggedIn: false,
-  loginUsernameValue: '',
-  loginPasswordValue: '',
+  loginUsernameValue: 'mallioch', //tired up typing in my test username
+  loginPasswordValue: 'test',
   loginErrorMessage: '',
   signupUsernameValue: '',
   signupPasswordValue: '',
-  signupErrorMessage: ''
+  signupErrorMessage: '',
+  books: [],
+  addBookTitle: '',
+  addBookAuthor: '',
+  addBookPubYear: '',
+  addBookDescription: ''
 }
 
 const reducer = (state = initialState, action) => {
-  console.log('reducer', action);
+  //console.log('reducer', action);
   switch (action.type) {
     case actions.LOGIN_USERNAME_CHANGE:
       return Object.assign({}, state, { loginUsernameValue: action.value });
@@ -54,6 +66,31 @@ const reducer = (state = initialState, action) => {
       });
     case actions.SIGNUP_FAILURE:
       return Object.assign({}, state, { signupErrorMessage: action.message });
+    case actions.LOAD_BOOKS:
+      return Object.assign({}, state, { books: action.books });
+    case actions.ADD_BOOK_TITLE_CHANGE:
+      return Object.assign({}, state, { addBookTitle: action.value });
+    case actions.ADD_BOOK_AUTHOR_CHANGE:
+      return Object.assign({}, state, { addBookAuthor: action.value });
+    case actions.ADD_BOOK_PUB_YEAR_CHANGE:
+      return Object.assign({}, state, { addBookPubYear: action.value });
+    case actions.ADD_BOOK_DESCRIPTION_CHANGE:
+      return Object.assign({}, state, { addBookDescription: action.value });
+    case actions.SAVE_NEW_BOOK:
+      const books = state.books.slice();
+      books.push(action.book);
+      return Object.assign({}, state, {
+        books: books,
+        addBookTitle: '',
+        addBookAuthor: '',
+        addBookPubYear: '',
+        addBookDescription: ''
+      });
+    case actions.REMOVE_BOOK:
+      const booksCopy = state.books.slice();
+      const index = booksCopy.indexOf(action.book);
+      booksCopy.splice(index, 1);
+      return Object.assign({}, state, { books: booksCopy });
     default: return state;
   }
 }

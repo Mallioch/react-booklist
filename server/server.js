@@ -15,6 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false}));
 
 require('./auth-stuff.js')(app);
 
+app.use(require('./book-apis.js'));
+
 
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {
