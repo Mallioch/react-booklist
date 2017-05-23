@@ -1,6 +1,7 @@
 import React from 'react';
 import { store, actions } from './store/store.js';
 import $ from 'jquery';
+import { withRouter } from 'react-router-dom';
 
 class AddBook extends React.Component {
 
@@ -12,6 +13,10 @@ class AddBook extends React.Component {
 
   componentDidMount() {
     this.unsub = store.subscribe(() => this.setState(store.getState()));
+
+    if (this.props.match.params.id !== undefined) {
+      store.dispatch({ type: actions.START_BOOK_EDIT, bookId: this.props.match.params.id });
+    }
   }
 
   componentWillUnmount() {
@@ -36,21 +41,41 @@ class AddBook extends React.Component {
 
   handleSaveClick() {
 
-    const data = {
+    const submittedData = {
       title: this.state.addBookTitle,
       author: this.state.addBookAuthor,
       description: this.state.addBookDescription,
       pubYear: this.state.addBookPubYear
     };
 
-    $.ajax({
-      url: '/api/book',
-      method: 'POST',
-      data: data
-    })
-    .done((data) => {
-      store.dispatch({ type: actions.SAVE_NEW_BOOK, book: data });
-    });
+    if (this.props.match.params.id !== undefined) {
+      //must be editing, so PUT time
+      $.ajax({
+        url: `/api/book/${this.props.match.params.id}`,
+        method: 'PUT',
+        data: submittedData
+      })
+      .done((data) => {
+        store.dispatch({
+          type: actions.EDIT_BOOK_COMPLETE,
+          book: submittedData,
+          bookId: this.props.match.params.id
+        });
+        this.props.history.push('/booklist');
+      });
+    }
+    else {
+      //must be new, so POST time
+      $.ajax({
+        url: '/api/book',
+        method: 'POST',
+        data: submittedData
+      })
+      .done((data) => {
+        store.dispatch({ type: actions.SAVE_NEW_BOOK, book: data });
+      });
+    }
+
 
   }
 
@@ -96,4 +121,4 @@ class AddBook extends React.Component {
 
 }
 
-export default AddBook;
+export default withRouter(AddBook);

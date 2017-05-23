@@ -48,6 +48,7 @@ class App extends React.Component {
           <Route path="/logout" component={Logout} />
           <PrivateRoute path="/booklist" component={BookList} />
           <PrivateRoute path="/addbook" component={AddBook} />
+          <PrivateRoute path="/editbook/:id" component={AddBook} />
         </div>
       </Router>
     );

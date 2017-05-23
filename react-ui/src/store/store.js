@@ -16,7 +16,9 @@ const actions = {
   ADD_BOOK_PUB_YEAR_CHANGE: 'ADD_BOOK_PUB_YEAR_CHANGE',
   ADD_BOOK_DESCRIPTION_CHANGE: 'ADD_BOOK_DESCRIPTION_CHANGE',
   SAVE_NEW_BOOK: 'SAVE_NEW_BOOK',
-  REMOVE_BOOK: 'REMOVE_BOOK'
+  REMOVE_BOOK: 'REMOVE_BOOK',
+  START_BOOK_EDIT: 'START_BOOK_EDIT',
+  EDIT_BOOK_COMPLETE: 'EDIT_BOOK_COMPLETE'
 }
 
 const initialState = {
@@ -91,6 +93,40 @@ const reducer = (state = initialState, action) => {
       const index = booksCopy.indexOf(action.book);
       booksCopy.splice(index, 1);
       return Object.assign({}, state, { books: booksCopy });
+    case actions.START_BOOK_EDIT:
+      const bookToEdit = state.books.find((x) => x.id === action.bookId);
+
+      return Object.assign({}, state, {
+        addBookTitle: bookToEdit.title,
+        addBookAuthor: bookToEdit.author,
+        addBookPubYear: bookToEdit.pubYear,
+        addBookDescription: bookToEdit.description
+      });
+    case actions.EDIT_BOOK_COMPLETE:
+      return (function(){
+        const booksCopy = state.books.slice();
+        const editedBook = state.books.find((x, i) => {
+          if (x.id === action.bookId) {
+            index = i;
+            return true;
+          }
+          return false;
+        });
+        editedBook.title = action.book.title;
+        editedBook.description = action.book.description;
+        editedBook.pubYear = action.book.pubYear;
+        editedBook.author = action.book.author;
+
+        return Object.assign({}, state, {
+          books: booksCopy,
+          addBookTitle: '',
+          addBookAuthor: '',
+          addBookPubYear: '',
+          addBookDescription: ''
+        });
+
+      })();
+
     default: return state;
   }
 }

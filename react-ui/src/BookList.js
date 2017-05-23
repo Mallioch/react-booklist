@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { store, actions } from './store/store.js';
 import $ from 'jquery';
 
@@ -16,12 +16,15 @@ class BookList extends React.Component {
       this.setState(store.getState())
     });
 
-    $.ajax({
-      url: '/api/books'
-    })
-    .done((data) => {
-      store.dispatch({ type: actions.LOAD_BOOKS, books: data.books });
-    });
+    //If there are already books in state, no need to load.
+    if (this.state.books.length === 0) {
+      $.ajax({
+        url: '/api/books'
+      })
+      .done((data) => {
+        store.dispatch({ type: actions.LOAD_BOOKS, books: data.books });
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -38,6 +41,10 @@ class BookList extends React.Component {
     });
   }
 
+  handleEdit(book) {
+    this.props.history.push(`/editbook/${book.id}`)
+  }
+
   render() {
 
     //console.log('state', this.state);
@@ -49,11 +56,15 @@ class BookList extends React.Component {
     else {
       const items = this.state.books.map((book) => {
         return <li key={book.id} className="list-group-item">
-          {book.title}
+          {book.title} by {book.author} ({book.pubYear})
           <button
             type="button"
             className="btn btn-danger btn-xs pull-right"
             onClick={() => this.handleDelete(book)}>Delete</button>
+          <button
+            type="button"
+            className="btn btn-default btn-xs pull-right"
+            onClick={() => this.handleEdit(book)}>Edit</button>
         </li>
       });
 
@@ -71,4 +82,4 @@ class BookList extends React.Component {
 
 }
 
-module.exports = BookList;
+module.exports = withRouter(BookList);

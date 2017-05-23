@@ -46,4 +46,17 @@ router.delete('/api/book/:id', (req, res) => {
 
 });
 
+router.put('/api/book/:id', (req, res) => {
+  Book.findByIdAndUpdate(req.params.id, {
+    $set: {
+      title: req.body.title,
+      author: req.body.author,
+      pubDate: req.body.pubDate,
+      description: req.body.description
+    }},
+    (err, data) => {
+      res.send(204);
+    });
+});
+
 module.exports = router;
