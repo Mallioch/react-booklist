@@ -7,6 +7,7 @@ import Logout from './Logout.js';
 import Navigation from './Navigation.js';
 import BookList from './BookList.js';
 import AddBook from './AddBook.js';
+import EditBook from './EditBook.js';
 import { store } from './store/store.js';
 
 
@@ -48,7 +49,7 @@ class App extends React.Component {
           <Route path="/logout" component={Logout} />
           <PrivateRoute path="/booklist" component={BookList} />
           <PrivateRoute path="/addbook" component={AddBook} />
-          <PrivateRoute path="/editbook/:id" component={AddBook} />
+          <PrivateRoute path="/editbook/:id" component={EditBook} />
         </div>
       </Router>
     );
